@@ -1,16 +1,20 @@
 package com.make.velodroid;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
+
+    private static final int REQUEST_CODE_ASK_PERMISSIONS = 1;
 
     private GoogleMap mMap;
 
@@ -23,7 +27,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-
 
     /**
      * Manipulates the map once available.
@@ -38,9 +41,40 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        if (checkAndRequestPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            mMap.setMyLocationEnabled(true);
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_PERMISSIONS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Is this a problem or is there a way to remove the error.
+                    mMap.setMyLocationEnabled(true);
+                }
+                break;
+        }
+    }
+
+    /**
+     * A utility method for checking if permissions have been given at runtime. If a given
+     * permission has not been granted, then it is requested, with the id
+     * REQUEST_CODE_ASK_PERMISSIONS.
+     *
+     * @param per The given permission to check.
+     * @return True if the permission has already been granted. False otherwise.
+     */
+    private boolean checkAndRequestPermission(String per) {
+        if (ContextCompat.checkSelfPermission(this, per) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] { per }, REQUEST_CODE_ASK_PERMISSIONS);
+            return false;
+        }
+
+        return true;
     }
 }
