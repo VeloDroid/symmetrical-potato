@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">VeloDroid</string>
+    <string name="title_activity_map">Map</string>
+</resources>
