@@ -6,4 +6,5 @@
 
     <!-- NewRideActivity -->
     <string name="hint_to">To where</string>
+    <string name="start">Start</string>
 </resources>

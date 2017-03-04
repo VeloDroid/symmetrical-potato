@@ -8,10 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -22,48 +19,26 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback,
+public class MapActivity extends GoogleApiActivity implements OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        LocationListener{
+        LocationListener {
 
     private static final int REQUEST_CODE_ASK_PERMISSIONS = 1;
     private static final long LOCATION_UPDATE_INTERVAL = 1000;
 
-    private GoogleApiClient mClient;
     private GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        // Intialize google play services api.
-        if (mClient == null) {
-            mClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
     }
 
-    protected void onStart() {
-        // TODO: Is the connect before or after super.
-        super.onStart();
-        mClient.connect();
-    }
-
-    protected void onStop() {
-        // TODO: Is the disconnect before or after super.
-        super.onStop();
-        mClient.disconnect();
-    }
 
     /**
      * Manipulates the map once available.
@@ -94,6 +69,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     // TODO: Is this a problem or is there a way to remove the permission error.
                     mMap.setMyLocationEnabled(true);
                 }
+
                 break;
         }
     }
@@ -117,22 +93,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        super.onConnected(bundle);
+
         LocationRequest request = LocationRequest.create();
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         request.setInterval(LOCATION_UPDATE_INTERVAL);
         // TODO: Check permission.
-        LocationServices.FusedLocationApi.requestLocationUpdates(mClient, request, this);
+        LocationServices.FusedLocationApi.requestLocationUpdates(getClient(), request, this);
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
 
     @Override
     public void onLocationChanged(Location location) {
