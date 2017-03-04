@@ -23,6 +23,8 @@ public class MapActivity extends GoogleApiActivity implements OnMapReadyCallback
         ActivityCompat.OnRequestPermissionsResultCallback,
         LocationListener {
 
+    public static final String RIDE_EXTRA = "ride";
+
     private static final int REQUEST_CODE_ASK_PERMISSIONS = 1;
     private static final long LOCATION_UPDATE_INTERVAL = 1000;
 
@@ -33,12 +35,15 @@ public class MapActivity extends GoogleApiActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+        // Get the parameterized ride.
+        Bundle b = getIntent().getExtras();
+        Ride r = b.getParcelable(RIDE_EXTRA);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-
 
     /**
      * Manipulates the map once available.
@@ -57,7 +62,6 @@ public class MapActivity extends GoogleApiActivity implements OnMapReadyCallback
             mMap.setMyLocationEnabled(true);
         }
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -101,7 +105,6 @@ public class MapActivity extends GoogleApiActivity implements OnMapReadyCallback
         // TODO: Check permission.
         LocationServices.FusedLocationApi.requestLocationUpdates(getClient(), request, this);
     }
-
 
     @Override
     public void onLocationChanged(Location location) {

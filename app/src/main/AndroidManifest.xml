@@ -40,12 +40,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MapActivity"
-            android:label="@string/title_activity_map" />
-        <activity
             android:name=".NewRideActivity"
             android:label="@string/title_activity_new_ride"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MapActivity"
+            android:label="@string/title_activity_map" />
     </application>
 
 </manifest>

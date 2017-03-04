@@ -1,6 +1,5 @@
 package com.make.velodroid;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -15,8 +14,6 @@ import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragmen
 import com.google.android.gms.maps.model.LatLng;
 
 public class NewRideActivity extends GoogleApiActivity {
-
-    public static final String RIDE_RESULT = "ride";
 
     private Place mCurPlace;
 
@@ -44,10 +41,9 @@ public class NewRideActivity extends GoogleApiActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra(RIDE_RESULT, createRide());
-                setResult(Activity.RESULT_OK, intent);
-                finish();
+                Intent intent = new Intent(NewRideActivity.this, MapActivity.class);
+                intent.putExtra(MapActivity.RIDE_EXTRA, createRide());
+                startActivity(intent);
             }
         });
     }
