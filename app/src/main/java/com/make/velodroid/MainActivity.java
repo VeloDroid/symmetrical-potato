@@ -20,13 +20,11 @@ public class MainActivity extends AppCompatActivity {
 
     private class ConnectThread extends Thread {
         private final BluetoothSocket mSocket;
-        private final BluetoothDevice mDevice;
 
         private final UUID CLIENT_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 
         public ConnectThread(BluetoothDevice device) {
             BluetoothSocket tmp = null;
-            mDevice = device;
 
             try {
                 tmp = device.createRfcommSocketToServiceRecord(CLIENT_UUID);
@@ -39,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            //mBluetoothAdapter.cancelDiscovery();
-
             try {
                 mSocket.connect();
             } catch (IOException connectEx) {
@@ -52,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // The connection succeeded, so manage it here.
+            setupBluetoothSocket(mSocket);
         }
 
         public void cancel() {
@@ -62,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    private VeloBluetoothService veloBt;
 
     private TextView btStatus;
 
@@ -103,9 +102,17 @@ public class MainActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     BluetoothDevice device = data.getParcelableExtra(BluetoothDeviceActivity.DEVICE_EXTRA);
                     btStatus.setText(device.getAddress());
+
+                    ConnectThread ct = new ConnectThread(device);
+                    ct.start();
                 }
 
                 break;
         }
+    }
+
+    private void setupBluetoothSocket(BluetoothSocket socket) {
+        veloBt = new VeloBluetoothService(socket);
+        veloBt.write(VeloBluetoothService.TURN_RIGHT_ON);
     }
 }

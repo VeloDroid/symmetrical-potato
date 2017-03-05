@@ -34,8 +34,9 @@ public class BluetoothDeviceActivity extends AppCompatActivity {
         }
     };
 
-    private List<BluetoothDevice> mDevices;
+    private BluetoothAdapter mBluetoothAdapter;
 
+    private List<BluetoothDevice> mDevices;
     private BluetoothDeviceAdapter deviceAdapter;
 
     @Override
@@ -52,6 +53,8 @@ public class BluetoothDeviceActivity extends AppCompatActivity {
         devicesView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mBluetoothAdapter.cancelDiscovery();
+
                 BluetoothDevice device = (BluetoothDevice) parent.getItemAtPosition(position);
 
                 Intent intent = new Intent();
@@ -84,12 +87,12 @@ public class BluetoothDeviceActivity extends AppCompatActivity {
     }
 
     private void setupBluetooth() {
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (bluetoothAdapter == null) {
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
             // TODO: Quit activity gracefully
         }
 
-        if (!bluetoothAdapter.isEnabled()) {
+        if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBt = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBt, REQUEST_ENABLE_BT);
         }
@@ -97,6 +100,6 @@ public class BluetoothDeviceActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver, filter);
 
-        bluetoothAdapter.startDiscovery();
+        mBluetoothAdapter.startDiscovery();
     }
 }
