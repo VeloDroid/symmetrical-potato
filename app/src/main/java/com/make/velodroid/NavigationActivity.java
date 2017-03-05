@@ -73,7 +73,7 @@ public class NavigationActivity extends GoogleApiActivity implements LocationLis
         float meters = dist(stepLatLng, curLatLng);
 
         if (!firstTime) {
-            if (meters < 5 && Math.abs(prevBearing - location.getBearing()) > 60) {
+            if (meters < 10 && Math.abs(prevBearing - location.getBearing()) > 60) {
                 curStepIndex++;
             }
         } else {

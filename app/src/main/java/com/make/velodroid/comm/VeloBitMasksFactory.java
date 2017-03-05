@@ -7,7 +7,7 @@ import com.akexorcist.googledirection.constant.Maneuver;
  */
 
 public class VeloBitMasksFactory {
-    private static final float DEFAULT_FAR_THRESHOLD = 60;
+    private static final float DEFAULT_FAR_THRESHOLD = 80;
     private static final float DEFAULT_MID_THRESHOLD = 30;
     private static final float DEFAULT_CLO_THRESHOLD = 15;
     private static final float DEFAULT_EPI_THRESHOLD = 4;
