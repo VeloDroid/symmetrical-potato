@@ -2,6 +2,7 @@ package com.make.velodroid;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +10,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
+import com.akexorcist.googledirection.DirectionCallback;
+import com.akexorcist.googledirection.GoogleDirection;
+import com.akexorcist.googledirection.constant.RequestResult;
+import com.akexorcist.googledirection.constant.TransportMode;
+import com.akexorcist.googledirection.model.Direction;
+import com.akexorcist.googledirection.model.Leg;
+import com.akexorcist.googledirection.model.Route;
+import com.akexorcist.googledirection.util.DirectionConverter;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -18,6 +27,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
 
 public class MapActivity extends GoogleApiActivity implements OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback,
@@ -28,21 +40,27 @@ public class MapActivity extends GoogleApiActivity implements OnMapReadyCallback
     private static final int REQUEST_CODE_ASK_PERMISSIONS = 1;
     private static final long LOCATION_UPDATE_INTERVAL = 1000;
 
+    private boolean firstLocationChange;
+
     private GoogleMap mMap;
+    private Ride r;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+        firstLocationChange = true;
+
         // Get the parameterized ride.
         Bundle b = getIntent().getExtras();
-        Ride r = b.getParcelable(RIDE_EXTRA);
+        r = b.getParcelable(RIDE_EXTRA);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
     }
 
     /**
@@ -55,11 +73,37 @@ public class MapActivity extends GoogleApiActivity implements OnMapReadyCallback
      * installed Google Play services and returned to the app.
      */
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) {
         mMap = googleMap;
 
         if (checkAndRequestPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
             mMap.setMyLocationEnabled(true);
+
+            GoogleDirection.withServerKey(getString(R.string.google_maps_key))
+                    .from(r.getFrom())
+                    .to(r.getTo())
+                    .transportMode(TransportMode.BICYCLING)
+                    .execute(new DirectionCallback() {
+                        @Override
+                        public void onDirectionSuccess(Direction direction, String rawBody) {
+                            if (direction.getStatus().equals(RequestResult.OK)) {
+                                Route route = direction.getRouteList().get(0);
+                                Leg leg = route.getLegList().get(0);
+                                ArrayList<LatLng> points = leg.getDirectionPoint();
+
+                                PolylineOptions options =
+                                        DirectionConverter.createPolyline(MapActivity.this, points, 5, Color.RED);
+                                googleMap.addPolyline(options);
+                            } else {
+                                // TODO: Display good error message.
+                            }
+                        }
+
+                        @Override
+                        public void onDirectionFailure(Throwable t) {
+                            // TODO: Display good error message.
+                        }
+                    });
         }
     }
 
@@ -108,8 +152,12 @@ public class MapActivity extends GoogleApiActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location location) {
-        LatLng mapsLoc = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate mapUpdate = CameraUpdateFactory.newLatLng(mapsLoc);
-        mMap.animateCamera(mapUpdate);
+        if (firstLocationChange) {
+            LatLng mapsLoc = new LatLng(location.getLatitude(), location.getLongitude());
+            CameraUpdate mapUpdate = CameraUpdateFactory.newLatLng(mapsLoc);
+            mMap.animateCamera(mapUpdate);
+        }
+
+        firstLocationChange = false;
     }
 }

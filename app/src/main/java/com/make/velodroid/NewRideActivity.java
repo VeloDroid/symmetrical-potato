@@ -57,12 +57,9 @@ public class NewRideActivity extends GoogleApiActivity {
     private Ride createRide() {
         // TODO: Permission check, again!
         Location curLoc = LocationServices.FusedLocationApi.getLastLocation(getClient());
+        LatLng from = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
+        LatLng to = mCurPlace.getLatLng();
 
-        LatLng latLng = mCurPlace.getLatLng();
-        Location to = new Location("");
-        to.setLatitude(latLng.latitude);
-        to.setLongitude(latLng.longitude);
-
-        return new Ride(curLoc, to);
+        return new Ride(from, to);
     }
 }

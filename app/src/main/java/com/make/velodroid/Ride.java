@@ -4,6 +4,8 @@ import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by matgrioni on 3/4/17.
  *
@@ -23,17 +25,17 @@ public class Ride implements Parcelable {
         }
     };
 
-    private Location from;
-    private Location to;
+    private LatLng from;
+    private LatLng to;
 
-    public Ride(Location from, Location to) {
+    public Ride(LatLng from, LatLng to) {
         this.from = from;
         this.to = to;
     }
 
     private Ride(Parcel source) {
-        this.from = source.readParcelable(Location.class.getClassLoader());
-        this.to = source.readParcelable(Location.class.getClassLoader());
+        this.from = source.readParcelable(LatLng.class.getClassLoader());
+        this.to = source.readParcelable(LatLng.class.getClassLoader());
     }
 
     @Override
@@ -47,11 +49,11 @@ public class Ride implements Parcelable {
         dest.writeParcelable(to, 0);
     }
 
-    public Location getFrom() {
+    public LatLng getFrom() {
         return from;
     }
 
-    public Location getTo() {
+    public LatLng getTo() {
         return to;
     }
 }
