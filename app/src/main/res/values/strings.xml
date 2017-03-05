@@ -3,6 +3,8 @@
     <string name="title_activity_map">Map</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_new_ride">NewRide</string>
+    <string name="title_activity_bluetooth_device">Navigation</string>
+    <string name="title_activity_navigation">Navigation</string>
 
     <!-- MainActivity -->
     <string name="no_bt_connection">No bluetooth connection</string>

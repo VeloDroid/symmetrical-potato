@@ -48,7 +48,12 @@
         <activity
             android:name=".MapActivity"
             android:label="@string/title_activity_map" />
-        <activity android:name=".BluetoothDeviceActivity"></activity>
+        <activity
+            android:name=".BluetoothDeviceActivity"
+            android:label="@string/title_activity_bluetooth_device"/>
+        <activity
+            android:name=".NavigationActivity"
+            android:label="@string/title_activity_navigation" />
     </application>
 
 </manifest>

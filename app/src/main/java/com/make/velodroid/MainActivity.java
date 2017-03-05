@@ -60,8 +60,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private VeloBluetoothService veloBt;
-
     private TextView btStatus;
 
     @Override
@@ -112,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupBluetoothSocket(BluetoothSocket socket) {
-        veloBt = new VeloBluetoothService(socket);
-        veloBt.write(VeloBluetoothService.TURN_RIGHT_ON);
+        VeloBluetoothService.initialize(socket);
     }
 }

@@ -10,15 +10,22 @@ import java.io.OutputStream;
  */
 
 public class VeloBluetoothService {
-    public static final byte TURN_RIGHT_OFF = 0x00;
-    public static final byte TURN_RIGHT_ON = 0x01;
-    public static final byte TURN_LEFT_OFF = 0x02;
-    public static final byte TURN_LEFT_ON = 0x03;
+
+    // TODO Remove singleton pattern.
+    private static VeloBluetoothService instance;
 
     private BluetoothSocket mSocket;
     private OutputStream os;
 
-    public VeloBluetoothService(BluetoothSocket socket) {
+    public static void initialize(BluetoothSocket socket) {
+        instance = new VeloBluetoothService(socket);
+    }
+
+    public static VeloBluetoothService getInstance() {
+        return instance;
+    }
+
+    private VeloBluetoothService(BluetoothSocket socket) {
         mSocket = socket;
 
         try {
