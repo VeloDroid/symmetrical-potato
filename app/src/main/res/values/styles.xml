@@ -17,4 +17,10 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="MediumLabel">
+        <item name="android:textSize">@dimen/medium_label_text_size</item>
+        <item name="android:paddingTop">@dimen/medium_label_padding_vertical</item>
+        <item name="android:paddingBottom">@dimen/medium_label_padding_vertical</item>
+    </style>
+
 </resources>

@@ -4,6 +4,9 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_new_ride">NewRide</string>
 
+    <!-- MainActivity -->
+    <string name="no_bt_connection">No bluetooth connection</string>
+
     <!-- NewRideActivity -->
     <string name="hint_to">To where</string>
     <string name="start">Start</string>

@@ -1,7 +1,9 @@
 <resources>
-    <!-- General Activity guidelines -->
+    <!-- General -->
     <dimen name="activity_padding_horizontal">16dp</dimen>
     <dimen name="activity_padding_vertical">16dp</dimen>
+    <dimen name="medium_label_padding_vertical">14dp</dimen>
+    <dimen name="medium_label_text_size">16sp</dimen>
 
     <dimen name="fab_margin">16dp</dimen>
 
